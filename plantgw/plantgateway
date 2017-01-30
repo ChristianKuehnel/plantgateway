@@ -1,0 +1,11 @@
+#!/usr/bin/python3
+
+from plantgw import PlantGateway
+
+
+def main():
+    pg = PlantGateway()
+    pg.process_all()
+
+if __name__ == '__main__':
+    main()

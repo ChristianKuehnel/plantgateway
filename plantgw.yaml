@@ -1,0 +1,29 @@
+# Template for configuration file of the plant gateway
+# copy this file to your home directory and rename it to ".plantgw.yaml" (starting with a ".").
+
+# mqtt configuration, replace this with the configuration of your mqtt server
+mqtt:
+    #url of your mqtt server, madatory
+    server: my-mqtt-server
+
+    #prefix of the topic where the sensor data will be published, mandatory
+    prefix: some/prefix/my/plants
+
+    #port of the mqtt server, optional if using 1883
+    #port: 1883
+
+    #credentials for the mqtt server, optional if you do not use authentication
+    #user:
+    #password:
+
+# sensor configuration, replace this with the configuration of your sensors
+sensors:
+    # bluetooth mac of the sensor, mandatory
+    - mac: 11:22:33:44:55:66
+      # alias to be used for the sensor, opotional
+      alias: myplant
+    - mac: 22:33:44:55:66::77
+      alias: otherplant
+
+# path where log file shall be stored, optional
+#logfile: plantgw.log
