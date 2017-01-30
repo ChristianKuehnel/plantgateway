@@ -54,7 +54,9 @@ class PlantGateway(object):
         self.mqtt_client = mqtt.Client()
         self.mqtt_client.connect(self.config.mqtt_server, self.config.mqtt_port, 60)
         self.mqtt_client.loop_start()
-        logging.info('connected to mqtt server "{}"'.format(self.config.mqtt_server))
+        logging.info('connected to mqtt server {}:{}'.format(
+            self.config.mqtt_server,
+            self.config.mqtt_port))
 
     def _publish(self, sensor, batt, temp, brightness, moisture, conductivity):
         prefix = '{}/{}/'.format(self.config.mqtt_prefix, sensor.get_path())
