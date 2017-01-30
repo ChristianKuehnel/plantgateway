@@ -1,3 +1,10 @@
+##############################################
+#
+# This is open source software licensed unter the Apache License 2.0
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+##############################################
+
 import paho.mqtt.client as mqtt
 from miflora.miflora_poller import MiFloraPoller, \
     MI_CONDUCTIVITY, MI_MOISTURE, MI_LIGHT, MI_TEMPERATURE, MI_BATTERY
