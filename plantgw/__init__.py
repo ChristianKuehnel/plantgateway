@@ -20,7 +20,8 @@ class Configuration(object):
             config = yaml.load(config_file)
 
         if 'logfile' in config:
-            logging.basicConfig(filename=config['logfile'], level=logging.INFO)
+            logfile = os.path.abspath(os.path.expanduser(config['logfile']))
+            logging.basicConfig(filename=logfile, level=logging.INFO)
         else:
             logging.basicConfig(level=logging.INFO)
 

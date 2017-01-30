@@ -3,7 +3,7 @@
 from distutils.core import setup
 
 setup(name='plantgateway',
-      version='0.1.0',
+      version='0.1.1',
       description='Bluetooth to mqtt gateway for Xiaomi Mi plant sensors',
       author='Christian Kühnel',
       author_email='christian.kuehnel@gmail.com',

@@ -11,15 +11,17 @@ The plantgateway is intended to be run on a small Linux machine line a [Raspberr
 or a [C.H.I.P](https://getchip.com/) that has both Bluetooth LE and WiFi.
 
 # installation
-* install [python 3.5](https://www.python.org/) (or above)
-* install [pip](https://pip.pypa.io/en/stable/installing/)
+* install [python 3.5](https://www.python.org/) (or above) and [pip](https://pip.pypa.io/en/stable/installing/)
+```
+sudo apt-get install python3 pip3
+```
 * install the plant gateway from github:
 ```
-pip install https://github.com/ChristianKuehnel/plantgateway/archive/master.zip
+sudo pip install https://github.com/ChristianKuehnel/plantgateway/archive/master.zip
 ```
 or if you have multiple python and pip installations:
 ```
-pip3 install https://github.com/ChristianKuehnel/plantgateway/archive/master.zip
+sudo pip3 install https://github.com/ChristianKuehnel/plantgateway/archive/master.zip
 ```
 
 # configuration
