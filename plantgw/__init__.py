@@ -70,7 +70,7 @@ class PlantGateway(object):
         prefix = '{}/{}/'.format(self.config.mqtt_prefix, sensor.get_path())
         data = {
             'battery': batt,
-            'temp': '{0:.1f}'.format(temp),
+            'temperature': '{0:.1f}'.format(temp),
             'brightness': brightness,
             'moisture': moisture,
             'conductivity': conductivity,
