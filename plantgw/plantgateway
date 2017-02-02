@@ -1,17 +1,20 @@
 #!/usr/bin/python3
 ##############################################
 #
-# This is open source software licensed unter the Apache License 2.0
+# This is open source software licensed under the Apache License 2.0
 # http://www.apache.org/licenses/LICENSE-2.0
 #
 ##############################################
 
 from plantgw import PlantGateway
+import sys
 
 
 def main():
     pg = PlantGateway()
-    pg.process_all()
+    error_count = pg.process_all()
+    sys.exit(error_count)
+
 
 if __name__ == '__main__':
     main()

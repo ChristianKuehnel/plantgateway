@@ -1,6 +1,6 @@
 ##############################################
 #
-# This is open source software licensed unter the Apache License 2.0
+# This is open source software licensed under the Apache License 2.0
 # http://www.apache.org/licenses/LICENSE-2.0
 #
 ##############################################
@@ -90,10 +90,13 @@ class PlantGateway(object):
         self._publish(sensor, batt, temp, brightness, moisture, conductivity)
 
     def process_all(self):
+        error_count = 0
         try:
             for sensor in self.config.sensors:
                 self.process_mac(sensor)
             logging.info('exiting successfully')
         except:
-            logging.exception('')
-            raise
+            msg = "could not read data from {} ({})".format(sensor.mac,sensor.alias)
+            logging.exception(msg)
+            error_count +=1
+        return error_count

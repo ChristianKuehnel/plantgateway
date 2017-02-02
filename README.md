@@ -60,3 +60,7 @@ attr <plant_name> autoSubscribeReadings <prefix_in_config>/<plant alias>/+
 ```
 
 After that configure the gardener to match your requirements
+
+# License
+Unless stated otherwise all software in this repository is licensed under the Apache License 2.0
+http://www.apache.org/licenses/LICENSE-2.0
