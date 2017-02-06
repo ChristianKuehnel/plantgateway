@@ -98,5 +98,6 @@ class PlantGateway(object):
         except:
             msg = "could not read data from {} ({})".format(sensor.mac,sensor.alias)
             logging.exception(msg)
+            print(msg)
             error_count +=1
         return error_count
