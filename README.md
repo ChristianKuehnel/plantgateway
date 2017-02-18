@@ -61,6 +61,11 @@ attr <plant_name> autoSubscribeReadings <prefix_in_config>/<plant alias>/+
 
 After that configure the gardener to match your requirements
 
+# Security
+A remark on security:
+Before running your MQTT server on the internet make sure that you enable
+SSL/TLS encryption and client authentication.
+
 # License
 Unless stated otherwise all software in this repository is licensed under the Apache License 2.0
 http://www.apache.org/licenses/LICENSE-2.0

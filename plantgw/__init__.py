@@ -25,10 +25,23 @@ class Configuration(object):
         else:
             logging.basicConfig(level=logging.INFO)
 
-        self.mqtt_port = 1883
-        # self.mqtt_user = None
-        # self.mqtt_password = None
+        self.mqtt_port = 8883
+        self.mqtt_user = None
+        self.mqtt_password = None
+        self.mqtt_ca_cert = None
         self.sensors = []
+
+        if 'port' in config['mqtt']:
+            self.mqtt_port = config['mqtt']['port']
+
+        if 'user' in config['mqtt']:
+            self.mqtt_user = config['mqtt']['user']
+
+        if 'password' in config['mqtt']:
+            self.mqtt_password = config['mqtt']['password']
+
+        if 'ca_cert' in config['mqtt']:
+            self.mqtt_ca_cert = config['mqtt']['ca_cert']
 
         self.mqtt_server = config['mqtt']['server']
         self.mqtt_prefix = config['mqtt']['prefix']
@@ -59,14 +72,28 @@ class PlantGateway(object):
         config_file_path = os.path.abspath(os.path.expanduser(config_file_path))
         self.config = Configuration(config_file_path)
         logging.info('loaded config file from {}'.format(config_file_path))
+        self.mqtt_client = None
+        self.connected = False
+        self._start_client()
+
+    def _start_client(self):
         self.mqtt_client = mqtt.Client()
+        if self.config.mqtt_user is not None:
+            self.mqtt_client.username_pw_set(self.config.mqtt_user,self.config.mqtt_password)
+        if self.config.mqtt_ca_cert is not None:
+            self.mqtt_client.tls_set(self.config.mqtt_ca_cert, cert_reqs=mqtt.ssl.CERT_REQUIRED)
+
+        def on_connect(client, _, flags, rc):
+            self.connected = True
+            logging.info("MQTT connection returned result: {}".format(mqtt.connack_string(rc)))
+        self.mqtt_client.on_connect = on_connect
+
         self.mqtt_client.connect(self.config.mqtt_server, self.config.mqtt_port, 60)
         self.mqtt_client.loop_start()
-        logging.info('connected to mqtt server {}:{}'.format(
-            self.config.mqtt_server,
-            self.config.mqtt_port))
 
     def _publish(self, sensor, batt, temp, brightness, moisture, conductivity):
+        if not self.connected:
+            raise Exception('not connected to MQTT server')
         prefix = '{}/{}/'.format(self.config.mqtt_prefix, sensor.get_path())
         data = {
             'battery': batt,
@@ -99,5 +126,5 @@ class PlantGateway(object):
             msg = "could not read data from {} ({})".format(sensor.mac,sensor.alias)
             logging.exception(msg)
             print(msg)
-            error_count +=1
+            error_count += 1
         return error_count

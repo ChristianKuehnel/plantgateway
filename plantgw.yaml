@@ -9,12 +9,15 @@ mqtt:
     #prefix of the topic where the sensor data will be published, mandatory
     prefix: some/prefix/my/plants
 
-    #port of the mqtt server, optional if using 1883
-    #port: 1883
+    #port of the mqtt server, optional if using 8883
+    #port: 8883
 
     #credentials for the mqtt server, optional if you do not use authentication
     #user:
     #password:
+
+    #path to ssl/tls ca file
+    #ca_cert: /etc/ssl/certs/<my ca file.pem>
 
 # sensor configuration, replace this with the configuration of your sensors
 sensors:
