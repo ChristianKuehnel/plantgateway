@@ -6,8 +6,7 @@
 ##############################################
 
 import paho.mqtt.client as mqtt
-from miflora.miflora_poller import MiFloraPoller, \
-    MI_CONDUCTIVITY, MI_MOISTURE, MI_LIGHT, MI_TEMPERATURE, MI_BATTERY
+from plantgw.sensor import Sensor
 import os
 import yaml
 import logging
@@ -23,7 +22,7 @@ class Configuration(object):
             logfile = os.path.abspath(os.path.expanduser(config['logfile']))
             logging.basicConfig(filename=logfile, level=logging.INFO)
         else:
-            logging.basicConfig(level=logging.INFO)
+            logging.basicConfig(level=logging.DEBUG)
 
         self.mqtt_port = 8883
         self.mqtt_user = None
@@ -47,10 +46,10 @@ class Configuration(object):
         self.mqtt_prefix = config['mqtt']['prefix']
 
         for s in config['sensors']:
-            self.sensors.append(Sensor(s['mac'], s['alias']))
+            self.sensors.append(SensorConfig(s['mac'], s['alias']))
 
 
-class Sensor(object):
+class SensorConfig(object):
 
     def __init__(self, mac, alias=None):
         if mac is None:
@@ -91,30 +90,26 @@ class PlantGateway(object):
         self.mqtt_client.connect(self.config.mqtt_server, self.config.mqtt_port, 60)
         self.mqtt_client.loop_start()
 
-    def _publish(self, sensor, batt, temp, brightness, moisture, conductivity):
+    def _publish(self, sensor_config, sensor):
         if not self.connected:
             raise Exception('not connected to MQTT server')
-        prefix = '{}/{}/'.format(self.config.mqtt_prefix, sensor.get_path())
+        prefix = '{}/{}/'.format(self.config.mqtt_prefix, sensor_config.get_path())
         data = {
-            'battery': batt,
-            'temperature': '{0:.1f}'.format(temp),
-            'brightness': brightness,
-            'moisture': moisture,
-            'conductivity': conductivity,
+            'battery': sensor.battery,
+            'temperature': '{0:.1f}'.format(sensor.temperature),
+            'brightness': sensor.brightness,
+            'moisture': sensor.moisture,
+            'conductivity': sensor.conductivity,
         }
         for topic, payload in data.items():
             self.mqtt_client.publish(prefix+topic, payload, qos=1)
         logging.info('sent data to topic {}'.format(prefix))
 
-    def process_mac(self, sensor):
-        logging.info('Getting data from sensor {}'.format(sensor.get_path()))
-        poller = MiFloraPoller(sensor.mac)
-        temp = poller.parameter_value(MI_TEMPERATURE)
-        moisture = poller.parameter_value(MI_MOISTURE)
-        brightness = poller.parameter_value(MI_LIGHT)
-        conductivity = poller.parameter_value(MI_CONDUCTIVITY)
-        batt = poller.parameter_value(MI_BATTERY)
-        self._publish(sensor, batt, temp, brightness, moisture, conductivity)
+    def process_mac(self, sensor_config):
+        logging.info('Getting data from sensor {}'.format(sensor_config.get_path()))
+        sensor = Sensor(sensor_config.mac)
+        sensor.get_data()
+        self._publish(sensor_config, sensor)
 
     def process_all(self):
         error_count = 0

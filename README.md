@@ -14,10 +14,10 @@ The plantgateway is intended to be run on a small Linux machine (e.g.
 or a [C.H.I.P](https://getchip.com/)) that has both Bluetooth LE and WiFi.
 
 # installation
-* install the bluez bluetooth stack, [python 3.5](https://www.python.org/) (or above) 
+* install [python 3.5](https://www.python.org/) (or above) 
 and [pip](https://pip.pypa.io/en/stable/installing/)
 ```
-sudo apt-get install python3 pip3 bluez
+sudo apt-get install python3 pip3
 ```
 * install the plant gateway from github:
 ```
