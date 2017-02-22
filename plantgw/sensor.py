@@ -1,6 +1,7 @@
 from bluepy.btle import Peripheral,BTLEException
 import logging
 import time
+import binascii
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +34,7 @@ class Sensor(object):
         logger.debug('version: {}'.format(self.version))
 
     def _fetch_35(self):
-        self._retry( self.peripheral.writeCharacteristic(0x33, bytes.fromhex('A01F'), withResponse=True) )
+        self._retry( self.peripheral.writeCharacteristic(0x33, bytes([0xA0,0x1F]), withResponse=True) )
 
         result = self._retry(self.peripheral.readCharacteristic(0x35) )
         logger.debug('Raw data for char 0x35: {}'.format(self._format_bytes(result)))
@@ -76,8 +77,8 @@ class Sensor(object):
     def _format_bytes(b):
         result = ''
         count = 0
-        for c in bytes.hex(b):
-            result += c
+        for c in b:
+            result += format(c, 'x')
             count += 1
             if count%2 == 0:
                 result += ' '
