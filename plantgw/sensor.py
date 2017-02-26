@@ -26,7 +26,7 @@ class Sensor(object):
         self._fetch_38()
 
     def _fetch_38(self):
-        result = self._retry( self.peripheral.readCharacteristic(0x38) )
+        result = self._retry( self.peripheral.readCharacteristic, [0x38] )
         self.battery = int.from_bytes(result[0:1],byteorder=BYTEORDER)
         self.version = result[2:7].decode('ascii')
         logger.debug('Raw data for char 0x38: {}'.format(self._format_bytes(result)))
@@ -34,9 +34,9 @@ class Sensor(object):
         logger.debug('version: {}'.format(self.version))
 
     def _fetch_35(self):
-        self._retry( self.peripheral.writeCharacteristic(0x33, bytes([0xA0,0x1F]), withResponse=True) )
+        self._retry(self.peripheral.writeCharacteristic, [0x33, bytes([0xA0, 0x1F]), True] )
 
-        result = self._retry(self.peripheral.readCharacteristic(0x35) )
+        result = self._retry(self.peripheral.readCharacteristic, [0x35] )
         logger.debug('Raw data for char 0x35: {}'.format(self._format_bytes(result)))
 
         if result == INVALID_DATA:
@@ -61,27 +61,20 @@ class Sensor(object):
         logger.debug('moisture: {}'.format(self.moisture))
 
     @staticmethod
-    def _retry(func,num_tries=5,sleep_time=0.5):
+    def _retry(func, args, num_tries=5, sleep_time=0.5):
         for i in range(0,num_tries):
             try:
-                return func
+                return func(*args)
             except BTLEException as e:
-                logger.exception()
-                time.sleep(sleep_time)
-                continue
+                logger.exception(e)
+                time.sleep(sleep_time * (2^i))
+                if i==num_tries-1:
+                    logger.error('retry finally failed!')
+                    raise e
+                else:
+                    continue
             break
-        logger.error('retry finally failed!')
-        raise
 
     @staticmethod
     def _format_bytes(b):
-        result = ''
-        count = 0
-        for c in b:
-            result += format(c, 'x')
-            count += 1
-            if count%2 == 0:
-                result += ' '
-            if count%8 == 0:
-                result += ' '
-        return result
+        return ' '.join([format(c,"02x") for c in b])
