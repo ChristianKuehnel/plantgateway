@@ -11,7 +11,7 @@ INVALID_DATA = b'\xaa\xbb\xcc\xdd\xee\xff\x99\x88wf\x00\x00\x00\x00\x00\x00'
 class Sensor(object):
 
     def __init__(self, mac):
-        self.peripheral = Peripheral(mac)
+        self.peripheral = self._retry(Peripheral, [mac])
         logger.debug('connected to device {}'.format(mac))
         self.battery = None
         self.version = None
