@@ -10,7 +10,7 @@ from plantgw.sensor import Sensor
 import os
 import yaml
 import logging
-
+import json
 
 class Configuration(object):
 
@@ -103,6 +103,8 @@ class PlantGateway(object):
         }
         for topic, payload in data.items():
             self.mqtt_client.publish(prefix+topic, payload, qos=1)
+        json_payload = json.dumps(data)
+        self.mqtt_client.publish(prefix, json_payload, qos=1)
         logging.info('sent data to topic {}'.format(prefix))
 
     def process_mac(self, sensor_config):
