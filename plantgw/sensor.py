@@ -1,7 +1,6 @@
-from bluepy.btle import Peripheral,BTLEException
+from bluepy.btle import Peripheral, BTLEException
 import logging
 import time
-import binascii
 
 logger = logging.getLogger(__name__)
 
@@ -26,17 +25,17 @@ class Sensor(object):
         self._fetch_38()
 
     def _fetch_38(self):
-        result = self._retry( self.peripheral.readCharacteristic, [0x38] )
-        self.battery = int.from_bytes(result[0:1],byteorder=BYTEORDER)
+        result = self._retry(self.peripheral.readCharacteristic, [0x38])
+        self.battery = int.from_bytes(result[0:1], byteorder=BYTEORDER)
         self.version = result[2:7].decode('ascii')
         logger.debug('Raw data for char 0x38: {}'.format(self._format_bytes(result)))
         logger.debug('battery: {}'.format(self.battery))
         logger.debug('version: {}'.format(self.version))
 
     def _fetch_35(self):
-        self._retry(self.peripheral.writeCharacteristic, [0x33, bytes([0xA0, 0x1F]), True] )
+        self._retry(self.peripheral.writeCharacteristic, [0x33, bytes([0xA0, 0x1F]), True])
 
-        result = self._retry(self.peripheral.readCharacteristic, [0x35] )
+        result = self._retry(self.peripheral.readCharacteristic, [0x35])
         logger.debug('Raw data for char 0x35: {}'.format(self._format_bytes(result)))
 
         if result == INVALID_DATA:
@@ -50,10 +49,10 @@ class Sensor(object):
             temp_bytes = [temp_bytes[0] ^ 0xFF, temp_bytes[1] ^ 0xFF]
 
         # the temperature needs to be scaled by factor of 0.1
-        self.temperature = int.from_bytes(temp_bytes,byteorder=BYTEORDER)/10.0
-        self.brightness = int.from_bytes(result[3:5],byteorder=BYTEORDER)
-        self.moisture = int.from_bytes(result[7:8],byteorder=BYTEORDER)
-        self.conductivity = int.from_bytes(result[8:10],byteorder=BYTEORDER)
+        self.temperature = int.from_bytes(temp_bytes, byteorder=BYTEORDER)/10.0
+        self.brightness = int.from_bytes(result[3:5], byteorder=BYTEORDER)
+        self.moisture = int.from_bytes(result[7:8], byteorder=BYTEORDER)
+        self.conductivity = int.from_bytes(result[8:10], byteorder=BYTEORDER)
 
         logger.debug('temp: {}'.format(self.temperature))
         logger.debug('brightness: {}'.format(self.brightness))
@@ -62,19 +61,18 @@ class Sensor(object):
 
     @staticmethod
     def _retry(func, args, num_tries=5, sleep_time=0.5):
-        for i in range(0,num_tries):
+        for i in range(0, num_tries):
             try:
                 return func(*args)
             except BTLEException as e:
                 logger.exception(e)
-                time.sleep(sleep_time * (2^i))
-                if i==num_tries-1:
+                time.sleep(sleep_time * (2 ^ i))
+                if i == num_tries - 1:
                     logger.error('retry finally failed!')
                     raise e
                 else:
                     continue
-            break
 
     @staticmethod
     def _format_bytes(b):
-        return ' '.join([format(c,"02x") for c in b])
+        return ' '.join([format(c, "02x") for c in b])
