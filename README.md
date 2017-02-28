@@ -1,5 +1,5 @@
 # plantgateway
-Bluetooth LE to mqtt gateway for Xiaomi Mi plant sensors.
+Bluetooth LE to mqtt gateway for Xiaomi Mi plant sensors. For more details see the [documentation overview](doc/overview.md).
 
 # Use case
 For many setups the Xiaomi Mi plant sensors are too far away from your 
