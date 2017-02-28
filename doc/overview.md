@@ -8,7 +8,7 @@
 
 The basic idea for the plantgateway is to read the sensor data from the Xiaomi Mi plant sensors via Bluetooth LE and send it via MQTT to the home automation server.
 
-![architecture](architecture.svg)
+![architecture](architecture.png)
 
 This should help to word around the limited range of Bluetooth LE. It will also allow to collect the sensor data from different location in one single home automation system.
 
