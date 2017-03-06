@@ -87,6 +87,13 @@ I'm working on the [migardener](https://github.com/ChristianKuehnel/home-assista
 
 ![home assistent screen shot](screenshot.png)
 
+If you just want to install that one component you can put this in a script and run it when you want to install/update the compoent:
+```
+#!/bin/sh
+cd ~homeassistant/.homeassistant/custom_components/sensor
+curl -O https://raw.githubusercontent.com/ChristianKuehnel/home-assistant/dev/homeassistant/components/sensor/migardener.py
+```
+
 ## MQTT server
 
 I'm using [mosquitto](https://mosquitto.org/), again running on Alpine Linux inside a LXC container)
