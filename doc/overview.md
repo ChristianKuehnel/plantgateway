@@ -99,6 +99,9 @@ Security:
 	* The ACME client is also available as [package](https://pkgs.alpinelinux.org/package/v3.3/community/x86/letsencrypt) on Alpine Linux and works out of the box
 * remark: some MQTT clients (e.g. from FHEM) do not support client certificates, but all do support TLS and username/password
 
+If you are running MQTT for critical applications, you might want to [monitor the MQTT server from Nagios/Icinga2](https://github.com/jpmens/check-mqtt).
+
+
 # Devleopment tools / libraries
 
 To help with the devleopment I can recommend these tools:
