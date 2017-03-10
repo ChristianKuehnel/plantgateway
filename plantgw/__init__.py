@@ -102,7 +102,7 @@ class PlantGateway(object):
             'conductivity': sensor.conductivity,
         }
         json_payload = json.dumps(data)
-        self.mqtt_client.publish(prefix, json_payload, qos=1)
+        self.mqtt_client.publish(prefix, json_payload, qos=1, retain=True)
         logging.info('sent data to topic {}'.format(prefix))
 
     def process_mac(self, sensor_config):
