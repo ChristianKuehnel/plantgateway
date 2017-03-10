@@ -115,13 +115,12 @@ class PlantGateway(object):
 
     def process_all(self):
         error_count = 0
-        try:
-            for sensor in self.config.sensors:
+        for sensor in self.config.sensors:
+            try:
                 self.process_mac(sensor)
-            logging.info('exiting successfully')
-        except:
-            msg = "could not read data from {} ({})".format(sensor.mac,sensor.alias)
-            logging.exception(msg)
-            print(msg)
-            error_count += 1
+            except:
+                msg = "could not read data from {} ({})".format(sensor.mac,sensor.alias)
+                logging.exception(msg)
+                print(msg)
+                error_count += 1
         return error_count
