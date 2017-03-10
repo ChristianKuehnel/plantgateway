@@ -101,8 +101,6 @@ class PlantGateway(object):
             'moisture': sensor.moisture,
             'conductivity': sensor.conductivity,
         }
-        for topic, payload in data.items():
-            self.mqtt_client.publish(prefix+topic, payload, qos=1)
         json_payload = json.dumps(data)
         self.mqtt_client.publish(prefix, json_payload, qos=1)
         logging.info('sent data to topic {}'.format(prefix))
