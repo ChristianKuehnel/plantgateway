@@ -8,12 +8,22 @@
 
 from plantgw import PlantGateway
 import sys
+import argparse
+import sensor
 
 
 def main():
-    pg = PlantGateway()
-    error_count = pg.process_all()
-    sys.exit(error_count)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-r', help='perform reset on device')
+    args = parser.parse_args()
+    if args.r is not None:
+        mac = args.r
+        s = sensor.Sensor(mac)
+        s.factory_reset()
+    else:
+        pg = PlantGateway()
+        error_count = pg.process_all()
+        sys.exit(error_count)
 
 
 if __name__ == '__main__':

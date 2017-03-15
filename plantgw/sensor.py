@@ -76,3 +76,11 @@ class Sensor(object):
     @staticmethod
     def _format_bytes(b):
         return ' '.join([format(c, "02x") for c in b])
+
+    def factory_reset(self):
+        for char in range(0,0x40):
+            try:
+                print('wiping characteristic {}'.format(char))
+                self.peripheral.writeCharacteristic(char, bytes([0,0,0,0]), False)
+            except:
+                pass
