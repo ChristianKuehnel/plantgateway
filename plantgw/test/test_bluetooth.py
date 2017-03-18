@@ -1,5 +1,12 @@
+##############################################
+#
+# This is open source software licensed under the Apache License 2.0
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+##############################################
+
 import unittest
-from plantgw.sensor import Sensor
+from plantgw.misensor import Sensor
 from bluepy.btle import BTLEException
 
 

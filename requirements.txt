@@ -1,1 +1,3 @@
-
+bluepy
+paho-mqtt
+pyyaml
