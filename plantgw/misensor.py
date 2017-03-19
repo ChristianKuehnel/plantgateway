@@ -38,6 +38,10 @@ class Sensor(object):
     def _fetch_38(self):
         """Get data from characteristic 38."""
         result = self._retry(self.peripheral.readCharacteristic, [0x38])
+        self._decode_38(result)
+
+    def _decode_38(self, result):
+        """Perform byte magic when decoding the data from the sensor."""
         self.battery = int.from_bytes(result[0:1], byteorder=BYTEORDER)
         self.version = result[2:7].decode('ascii')
         LOGGER.debug('Raw data for char 0x38: %s', self._format_bytes(result))
@@ -56,6 +60,10 @@ class Sensor(object):
             LOGGER.error(msg)
             raise Exception(msg)
 
+        self._decode_35(result)
+
+    def _decode_35(self, result):
+        """Perform byte magic when decoding the data from the sensor."""
         # negative numbers are stored in one's complement
         temp_bytes = result[0:2]
         if temp_bytes[1] & 0x80 > 0:
@@ -79,7 +87,7 @@ class Sensor(object):
             try:
                 return func(*args)
             except BTLEException as exception:
-                LOGGER.exception(exception)
+                LOGGER.info("function %s failed (try %d of %d)", func, i+1, num_tries)
                 time.sleep(sleep_time * (2 ^ i))
                 if i == num_tries - 1:
                     LOGGER.error('retry finally failed!')
