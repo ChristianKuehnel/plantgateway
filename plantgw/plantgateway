@@ -9,7 +9,7 @@
 from plantgw import PlantGateway
 import sys
 import argparse
-import sensor
+import misensor
 
 
 def main():
@@ -18,7 +18,7 @@ def main():
     args = parser.parse_args()
     if args.r is not None:
         mac = args.r
-        s = sensor.Sensor(mac)
+        s = misensor.Sensor(mac)
         s.factory_reset()
     else:
         pg = PlantGateway()
