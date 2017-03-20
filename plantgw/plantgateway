@@ -9,7 +9,7 @@
 from plantgw import PlantGateway
 import sys
 import argparse
-import misensor
+import plantgw.misensor as misensor
 
 
 def main():
