@@ -14,9 +14,11 @@ See https://github.com/ChristianKuehnel/plantgateway for more details.
 import os
 import logging
 import json
+import yaml
+from datetime import datetime
 import paho.mqtt.client as mqtt
 from plantgw.misensor import Sensor
-import yaml
+
 
 
 class Configuration(object):
@@ -111,6 +113,7 @@ class PlantGateway(object):
             'brightness': sensor_data.brightness,
             'moisture': sensor_data.moisture,
             'conductivity': sensor_data.conductivity,
+            'timestamp' : datetime.now().isoformat(),
         }
         json_payload = json.dumps(data)
         self.mqtt_client.publish(prefix, json_payload, qos=1, retain=True)
