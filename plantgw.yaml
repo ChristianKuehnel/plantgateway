@@ -30,3 +30,6 @@ sensors:
 
 # path where log file shall be stored, optional
 #logfile: plantgw.log
+
+# option for debug logging, optional
+#debug:
