@@ -30,9 +30,15 @@ class Configuration(object):
 
         if 'logfile' in config:
             logfile = os.path.abspath(os.path.expanduser(config['logfile']))
-            logging.basicConfig(filename=logfile, level=logging.INFO)
+            logform = '%(asctime)s %(levelname)-8s %(message)s'
+            timeform = '%a, %d %b %Y %H:%M:%S'
+            if 'debug' in config and config['debug']=='true':
+                logging.basicConfig(filename=logfile, level=logging.DEBUG, datefmt=timeform, format=logform)
+            else:
+                logging.basicConfig(filename=logfile, level=logging.INFO, datefmt=timeform, format=logform)
         else:
-            logging.basicConfig(level=logging.DEBUG)
+            logging.basicConfig(level=logging.DEBUG, datefmt=timeform, format=logform)
+
 
         self.mqtt_port = 8883
         self.mqtt_user = None
