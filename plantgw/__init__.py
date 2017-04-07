@@ -32,7 +32,7 @@ class Configuration(object):
             logfile = os.path.abspath(os.path.expanduser(config['logfile']))
             logform = '%(asctime)s %(levelname)-8s %(message)s'
             timeform = '%a, %d %b %Y %H:%M:%S'
-            if 'debug' in config and config['debug']=='true':
+            if 'debug' in config:
                 logging.basicConfig(filename=logfile, level=logging.DEBUG, datefmt=timeform, format=logform)
             else:
                 logging.basicConfig(filename=logfile, level=logging.INFO, datefmt=timeform, format=logform)
