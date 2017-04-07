@@ -32,4 +32,4 @@ sensors:
 #logfile: plantgw.log
 
 # option for debug logging, optional
-#debug: false
+#debug:
