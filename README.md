@@ -17,7 +17,7 @@ or a [C.H.I.P](https://getchip.com/)) that has both Bluetooth LE and WiFi.
 * install [python 3.5](https://www.python.org/) (or above) 
 and [pip](https://pip.pypa.io/en/stable/installing/)
 ```
-sudo apt-get install python3-pip build-essentials libglib2.0-dev
+sudo apt-get install python3-pip build-essential libglib2.0-dev
 ```
 * install the plant gateway from github:
 ```
