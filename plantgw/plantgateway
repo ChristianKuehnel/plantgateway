@@ -6,7 +6,7 @@
 #
 ##############################################
 
-from plantgw import PlantGateway
+from plantgw import PlantGateway, SensorConfig
 import sys
 import argparse
 import plantgw.misensor as misensor
@@ -22,8 +22,12 @@ def main():
         s.factory_reset()
     else:
         pg = PlantGateway()
-        error_count = pg.process_all()
-        sys.exit(error_count)
+        failed_sensors = pg.process_all()
+        if len(failed_sensors) > 0:
+            print('Could not get data from {}sensor(s): {}.'.format(
+                len(failed_sensors),
+                SensorConfig.get_name_string(failed_sensors)))
+        sys.exit(len(failed_sensors))
 
 
 if __name__ == '__main__':

@@ -15,11 +15,10 @@ import os
 import logging
 import json
 import time
-import yaml
 from datetime import datetime
+import yaml
 import paho.mqtt.client as mqtt
 from plantgw.misensor import Sensor
-
 
 
 class Configuration(object):
@@ -39,7 +38,6 @@ class Configuration(object):
                 logging.basicConfig(filename=logfile, level=logging.INFO, datefmt=timeform, format=logform)
         else:
             logging.basicConfig(level=logging.DEBUG, datefmt=timeform, format=logform)
-
 
         self.mqtt_port = 8883
         self.mqtt_user = None
@@ -85,6 +83,11 @@ class SensorConfig(object):
             return self.alias
         return self.mac
 
+    @staticmethod
+    def get_name_string(sensor_list):
+        """Convert a list of sensor objects to a nice string."""
+        return ', '.join([sensor.alias for sensor in sensor_list])
+
 
 class PlantGateway(object):
     """Main class of the module."""
@@ -122,7 +125,7 @@ class PlantGateway(object):
             'brightness': sensor_data.brightness,
             'moisture': sensor_data.moisture,
             'conductivity': sensor_data.conductivity,
-            'timestamp' : datetime.now().isoformat(),
+            'timestamp': datetime.now().isoformat(),
         }
         json_payload = json.dumps(data)
         self.mqtt_client.publish(prefix, json_payload, qos=1, retain=True)
@@ -137,18 +140,34 @@ class PlantGateway(object):
 
     def process_all(self):
         """Get data from all sensors."""
-        error_count = 0
-        for sensor in self.config.sensors:
-            try:
-                self.process_mac(sensor)
-            # pylint: disable=bare-except
-            except:
-                msg = "could not read data from {} ({})".format(sensor.mac, sensor.alias)
-                logging.exception(msg)
-                if sensor.fail_silent:
-                    logging.warning('fail_silent is set for sensor {}, so not raising an exception.'.format(sensor.alias))
-                else:
-                    print(msg)
-                    error_count += 1
-                time.sleep(1)
-        return error_count
+        next_list = self.config.sensors
+        timeout = 1  # initial timeout in seconds
+        max_retry = 6  # number of retries
+        retry_count = 0
+
+        while retry_count < max_retry and len(next_list) > 0:
+            # if this is not the first try: wait some time before trying again
+            if retry_count > 0:
+                logging.info('try %d of %d: could not process sensor(s) %s. Waiting %d sec for next try',
+                             retry_count, max_retry, SensorConfig.get_name_string(next_list), timeout)
+                time.sleep(timeout)
+                timeout *= 2  # exponential backoff-time
+
+            current_list = next_list
+            retry_count += 1
+            next_list = []
+            for sensor in current_list:
+                try:
+                    self.process_mac(sensor)
+                # pylint: disable=bare-except
+                except:
+                    next_list.append(sensor) # if it failed, we'll try again in the next round
+                    msg = "could not read data from {} ({})".format(sensor.mac, sensor.alias)
+                    logging.exception(msg)
+                    if sensor.fail_silent:
+                        logging.warning('fail_silent is set for sensor %s, so not raising an exception.', sensor.alias)
+                    else:
+                        print(msg)
+
+        # return sensors that could not be processed after max_retry
+        return next_list

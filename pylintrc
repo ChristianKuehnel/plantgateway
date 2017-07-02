@@ -3,3 +3,4 @@ ignore=yaml
 
 [MESSAGES CONTROL]
 disable=too-few-public-methods, unused-argument, locally-disabled
+max-line-length=120

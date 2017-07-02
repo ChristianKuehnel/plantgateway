@@ -8,7 +8,6 @@
 ##############################################
 
 import logging
-import time
 from bluepy.btle import Peripheral, BTLEException
 
 LOGGER = logging.getLogger(__name__)
@@ -21,7 +20,7 @@ class Sensor(object):
     """Read data from sensor."""
 
     def __init__(self, mac):
-        self.peripheral = self._retry(Peripheral, [mac])
+        self.peripheral = Peripheral(mac)
         LOGGER.debug('connected to device %s', mac)
         self.battery = None
         self.version = None
@@ -37,7 +36,7 @@ class Sensor(object):
 
     def _fetch_38(self):
         """Get data from characteristic 38."""
-        result = self._retry(self.peripheral.readCharacteristic, [0x38])
+        result = self.peripheral.readCharacteristic(0x38)
         self._decode_38(result)
 
     def _decode_38(self, result):
@@ -50,9 +49,9 @@ class Sensor(object):
 
     def _fetch_35(self):
         """Get data from characteristic 35."""
-        self._retry(self.peripheral.writeCharacteristic, [0x33, bytes([0xA0, 0x1F]), True])
+        self.peripheral.writeCharacteristic(0x33, bytes([0xA0, 0x1F]), True)
 
-        result = self._retry(self.peripheral.readCharacteristic, [0x35])
+        result = self.peripheral.readCharacteristic(0x35)
         LOGGER.debug('Raw data for char 0x35: %s', self._format_bytes(result))
 
         if result == INVALID_DATA:
@@ -79,21 +78,6 @@ class Sensor(object):
         LOGGER.debug('brightness: %d', self.brightness)
         LOGGER.debug('conductivity: %d', self.conductivity)
         LOGGER.debug('moisture: %d', self.moisture)
-
-    @staticmethod
-    def _retry(func, args, num_tries=5, sleep_time=0.5):
-        """Retry calling a function on Exception."""
-        for i in range(0, num_tries):
-            try:
-                return func(*args)
-            except BTLEException as exception:
-                LOGGER.info("function %s failed (try %d of %d)", func, i+1, num_tries)
-                time.sleep(sleep_time * (2 ^ i))
-                if i == num_tries - 1:
-                    LOGGER.error('retry finally failed!')
-                    raise exception
-                else:
-                    continue
 
     @staticmethod
     def _format_bytes(raw_data):
