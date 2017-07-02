@@ -16,7 +16,7 @@ if sys.version_info < (3, 0):
 
 
 setup(name='plantgateway',
-      version='0.3.6',
+      version='0.3.7',
       description='Bluetooth to mqtt gateway for Xiaomi Mi plant sensors',
       author='Christian Kühnel',
       author_email='christian.kuehnel@gmail.com',

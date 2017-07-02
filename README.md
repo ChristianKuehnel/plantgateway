@@ -13,19 +13,19 @@ The plantgateway is intended to be run on a small Linux machine (e.g.
 [Raspberry Pi](https://www.raspberrypi.org/)
 or a [C.H.I.P](https://getchip.com/)) that has both Bluetooth LE and WiFi.
 
-# installation
-* install [python 3.5](https://www.python.org/) (or above) 
+# installation & update
+* install [python 3.4](https://www.python.org/) (or above)
 and [pip](https://pip.pypa.io/en/stable/installing/)
 ```
 sudo apt-get install python3-pip build-essential libglib2.0-dev
 ```
 * install the plant gateway from github:
 ```
-sudo pip install https://github.com/ChristianKuehnel/plantgateway/archive/master.zip
+sudo pip install --upgrade https://github.com/ChristianKuehnel/plantgateway/archive/master.zip
 ```
 or if you have multiple python and pip installations:
 ```
-sudo pip3 install https://github.com/ChristianKuehnel/plantgateway/archive/master.zip
+sudo pip3 install --upgrade https://github.com/ChristianKuehnel/plantgateway/archive/master.zip
 ```
 * To update your installation just run pip again. 
 
