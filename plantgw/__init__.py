@@ -14,6 +14,7 @@ See https://github.com/ChristianKuehnel/plantgateway for more details.
 import os
 import logging
 import json
+import time
 import yaml
 from datetime import datetime
 import paho.mqtt.client as mqtt
@@ -62,19 +63,21 @@ class Configuration(object):
         self.mqtt_prefix = config['mqtt']['prefix']
 
         for sensor_config in config['sensors']:
-            self.sensors.append(SensorConfig(sensor_config['mac'], sensor_config['alias']))
+            fail_silent = 'fail_silent' in sensor_config
+            self.sensors.append(SensorConfig(sensor_config['mac'], sensor_config['alias'], fail_silent))
 
 
 class SensorConfig(object):
     """Stores the configuration of a sensor."""
 
-    def __init__(self, mac, alias=None):
+    def __init__(self, mac, alias=None, fail_silent=False):
         if mac is None:
             msg = 'mac of sensor must not be None'
             logging.error(msg)
             raise Exception('mac of sensor must not be None')
         self.mac = mac
         self.alias = alias
+        self.fail_silent = fail_silent
 
     def get_topic(self):
         """Get the topic name for the sensor."""
@@ -142,6 +145,10 @@ class PlantGateway(object):
             except:
                 msg = "could not read data from {} ({})".format(sensor.mac, sensor.alias)
                 logging.exception(msg)
-                print(msg)
-                error_count += 1
+                if sensor.fail_silent:
+                    logging.warning('fail_silent is set for sensor {}, so not raising an exception.'.format(sensor.alias))
+                else:
+                    print(msg)
+                    error_count += 1
+                time.sleep(1)
         return error_count

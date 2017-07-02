@@ -30,7 +30,7 @@ sudo pip3 install https://github.com/ChristianKuehnel/plantgateway/archive/maste
 * To update your installation just run pip again. 
 
 # configuration
-Copy the plantgw.yaml (in this repository) to your home directory and 
+Copy the [plantgw.yaml](plantgw.yaml) (in this repository) to your home directory and
 rename it to ".plantgw.yaml".
 Then change this file to match your requirements.
 
