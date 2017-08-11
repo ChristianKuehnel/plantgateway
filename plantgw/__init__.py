@@ -172,13 +172,14 @@ class PlantGateway(object):
                 try:
                     self.process_mac(sensor)
                 # pylint: disable=bare-except
-                except:
+                 except Exception as e:
                     next_list.append(sensor) # if it failed, we'll try again in the next round
-                    msg = "could not read data from {} ({})".format(sensor.mac, sensor.alias)
-                    logging.exception(msg)
+                    msg = "could not read data from {} ({}) with reason: {}".format(sensor.mac, sensor.alias, str(e))
                     if sensor.fail_silent:
+                        logging.error(msg)
                         logging.warning('fail_silent is set for sensor %s, so not raising an exception.', sensor.alias)
                     else:
+                        logging.exception(msg)
                         print(msg)
 
         # return sensors that could not be processed after max_retry
