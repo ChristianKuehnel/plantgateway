@@ -8,9 +8,13 @@ mqtt:
 
     #prefix of the topic where the sensor data will be published, mandatory
     prefix: some/prefix/my/plants
+    #terminate topic with a trailing slash, optional as defaults to True
+    #trailing_slash: False
 
     #port of the mqtt server, optional if using 8883
     #port: 8883
+    #client_id to use with the mqtt server, optional as defaults to unique numeric identifier
+    #client_id: PlantGateway
 
     #credentials for the mqtt server, optional if you do not use authentication
     #user:
@@ -18,6 +22,9 @@ mqtt:
 
     #path to ssl/tls ca file
     #ca_cert: /etc/ssl/certs/<my ca file.pem>
+
+    #format for timestamp string using strftime(), optional as defaults to ISO8601 format
+    #timestamp_format: "%d/%m/%y %H:%M:%S"
 
 # sensor configuration, replace this with the configuration of your sensors
 sensors:
