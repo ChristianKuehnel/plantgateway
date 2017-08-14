@@ -27,6 +27,7 @@ def main():
             print('Could not get data from {}sensor(s): {}.'.format(
                 len(failed_sensors),
                 SensorConfig.get_name_string(failed_sensors)))
+        pg.stop_client()
         sys.exit(len(failed_sensors))
 
 
