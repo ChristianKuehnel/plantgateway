@@ -83,16 +83,7 @@ About Home Assistant:
 * Dislike:
    * no real complaints so far...
 
-I'm working on the [migardener](https://github.com/ChristianKuehnel/home-assistant/blob/dev/homeassistant/components/sensor/migardener.py), a component for Home Assistant to provide a nice interface and also check how the plant is doing. But that's still work in progress:
-
-![home assistent screen shot](screenshot.png)
-
-If you just want to install that one component you can put this in a script and run it when you want to install/update the compoent:
-```
-#!/bin/sh
-cd ~homeassistant/.homeassistant/custom_components/sensor
-curl -O https://raw.githubusercontent.com/ChristianKuehnel/home-assistant/dev/homeassistant/components/sensor/migardener.py
-```
+There is now the component [plant monitor](https://home-assistant.io/components/plant/) available as part of Home Assistant. It will monitor the status of your plants and you can trigger notifications in case of problems.
 
 ## MQTT server
 
