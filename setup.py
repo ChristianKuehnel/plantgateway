@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 ##############################################
 #
 # This is open source software licensed under the Apache License 2.0
