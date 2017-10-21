@@ -43,6 +43,9 @@ class Configuration(object):
         self.mqtt_user = None
         self.mqtt_password = None
         self.mqtt_ca_cert = None
+        self.mqtt_client_id = None
+        self.mqtt_trailing_slash = True
+        self.mqtt_timestamp_format = None
         self.sensors = []
 
         if 'port' in config['mqtt']:
@@ -56,6 +59,15 @@ class Configuration(object):
 
         if 'ca_cert' in config['mqtt']:
             self.mqtt_ca_cert = config['mqtt']['ca_cert']
+
+        if 'client_id' in config['mqtt']:
+            self.mqtt_client_id = config['mqtt']['client_id']
+
+        if 'trailing_slash' in config['mqtt'] and not config['mqtt']['trailing_slash']:
+            self.mqtt_trailing_slash = False
+
+        if 'timestamp_format' in config['mqtt']:
+            self.mqtt_timestamp_format = config['mqtt']['timestamp_format']
 
         self.mqtt_server = config['mqtt']['server']
         self.mqtt_prefix = config['mqtt']['prefix']
@@ -92,16 +104,28 @@ class SensorConfig(object):
 class PlantGateway(object):
     """Main class of the module."""
 
-    def __init__(self, config_file_path='~/.plantgw.yaml'):
+    def __init__(self, config_file_path='~/.plantgw.yaml', start_client = True):
         config_file_path = os.path.abspath(os.path.expanduser(config_file_path))
         self.config = Configuration(config_file_path)
         logging.info('loaded config file from %s', config_file_path)
         self.mqtt_client = None
         self.connected = False
-        self._start_client()
+        if start_client:
+            self._start_client()
+
+    def start_client(self):
+        if not self.connected:
+            self._start_client()
+
+    def stop_client(self):
+        if self.connected:
+            self.mqtt_client.disconnect()
+            self.connected = False
+        self.mqtt_client.loop_stop()
+        logging.info('Disconnected MQTT connection')
 
     def _start_client(self):
-        self.mqtt_client = mqtt.Client()
+        self.mqtt_client = mqtt.Client(self.config.mqtt_client_id)
         if self.config.mqtt_user is not None:
             self.mqtt_client.username_pw_set(self.config.mqtt_user, self.config.mqtt_password)
         if self.config.mqtt_ca_cert is not None:
@@ -118,7 +142,12 @@ class PlantGateway(object):
     def _publish(self, sensor_config, sensor_data):
         if not self.connected:
             raise Exception('not connected to MQTT server')
-        prefix = '{}/{}/'.format(self.config.mqtt_prefix, sensor_config.get_topic())
+
+        prefix_fmt = '{}/{}'
+        if self.config.mqtt_trailing_slash:
+            prefix_fmt += '/'
+        prefix = prefix_fmt.format(self.config.mqtt_prefix, sensor_config.get_topic())
+
         data = {
             'battery': sensor_data.battery,
             'temperature': '{0:.1f}'.format(sensor_data.temperature),
@@ -127,6 +156,8 @@ class PlantGateway(object):
             'conductivity': sensor_data.conductivity,
             'timestamp': datetime.now().isoformat(),
         }
+        if self.config.mqtt_timestamp_format is not None:
+            data['timestamp'] = datetime.now().strftime(self.config.mqtt_timestamp_format)
         json_payload = json.dumps(data)
         self.mqtt_client.publish(prefix, json_payload, qos=1, retain=True)
         logging.info('sent data to topic %s', prefix)
@@ -160,13 +191,14 @@ class PlantGateway(object):
                 try:
                     self.process_mac(sensor)
                 # pylint: disable=bare-except
-                except:
+                except Exception as e:
                     next_list.append(sensor) # if it failed, we'll try again in the next round
-                    msg = "could not read data from {} ({})".format(sensor.mac, sensor.alias)
-                    logging.exception(msg)
+                    msg = "could not read data from {} ({}) with reason: {}".format(sensor.mac, sensor.alias, str(e))
                     if sensor.fail_silent:
+                        logging.error(msg)
                         logging.warning('fail_silent is set for sensor %s, so not raising an exception.', sensor.alias)
                     else:
+                        logging.exception(msg)
                         print(msg)
 
         # return sensors that could not be processed after max_retry
