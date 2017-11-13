@@ -10,14 +10,13 @@
 import sys
 from distutils.core import setup
 
-install_requires = ['bluepy', "paho-mqtt", 'pyyaml']
+install_requires = ['bluepy==1.1.4', "paho-mqtt", 'pyyaml']
 if sys.version_info < (3, 0):
     install_requires.append('mock')
-    print(install_requires)
 
 
 setup(name='plantgateway',
-      version='0.3.7',
+      version='0.3.8',
       description='Bluetooth to mqtt gateway for Xiaomi Mi plant sensors',
       author='Christian Kühnel',
       author_email='christian.kuehnel@gmail.com',
