@@ -21,6 +21,7 @@ import paho.mqtt.client as mqtt
 from plantgw.misensor import Sensor
 
 
+#pylint: disable-msg=too-many-instance-attributes
 class Configuration(object):
     """Stores the program configuration."""
 
@@ -104,7 +105,7 @@ class SensorConfig(object):
 class PlantGateway(object):
     """Main class of the module."""
 
-    def __init__(self, config_file_path='~/.plantgw.yaml', start_client = True):
+    def __init__(self, config_file_path='~/.plantgw.yaml', start_client=True):
         config_file_path = os.path.abspath(os.path.expanduser(config_file_path))
         self.config = Configuration(config_file_path)
         logging.info('loaded config file from %s', config_file_path)
@@ -114,10 +115,12 @@ class PlantGateway(object):
             self._start_client()
 
     def start_client(self):
+        """Start the mqtt client."""
         if not self.connected:
             self._start_client()
 
     def stop_client(self):
+        """Stop the mqtt client."""
         if self.connected:
             self.mqtt_client.disconnect()
             self.connected = False
@@ -176,7 +179,7 @@ class PlantGateway(object):
         max_retry = 6  # number of retries
         retry_count = 0
 
-        while retry_count < max_retry and len(next_list) > 0:
+        while retry_count < max_retry and next_list:
             # if this is not the first try: wait some time before trying again
             if retry_count > 0:
                 logging.info('try %d of %d: could not process sensor(s) %s. Waiting %d sec for next try',
@@ -190,10 +193,11 @@ class PlantGateway(object):
             for sensor in current_list:
                 try:
                     self.process_mac(sensor)
-                # pylint: disable=bare-except
-                except Exception as e:
+                # pylint: disable=bare-except, broad-except
+                except Exception as exception:
                     next_list.append(sensor) # if it failed, we'll try again in the next round
-                    msg = "could not read data from {} ({}) with reason: {}".format(sensor.mac, sensor.alias, str(e))
+                    msg = "could not read data from {} ({}) with reason: {}".format(
+                        sensor.mac, sensor.alias, str(exception))
                     if sensor.fail_silent:
                         logging.error(msg)
                         logging.warning('fail_silent is set for sensor %s, so not raising an exception.', sensor.alias)
