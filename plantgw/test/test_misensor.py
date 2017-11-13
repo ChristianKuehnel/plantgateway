@@ -7,14 +7,14 @@
 
 import sys
 import unittest
-if sys.version_info < (3, 0):
-    import mock
-else:
-    import unittest.mock as mock
 import logging
 import binascii
 from plantgw.misensor import Sensor
 from bluepy.btle import BTLEException
+if sys.version_info < (3, 0):
+    import mock
+else:
+    import unittest.mock as mock
 
 # setup logging
 logger = logging.getLogger()
@@ -57,4 +57,4 @@ class TestMiSensor(unittest.TestCase):
 
     @staticmethod
     def _str2bytearray(hex_string):
-        return binascii.unhexlify(hex_string.replace(' ',''))
+        return binascii.unhexlify(hex_string.replace(' ', ''))

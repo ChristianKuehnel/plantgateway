@@ -21,7 +21,7 @@ import paho.mqtt.client as mqtt
 from plantgw.misensor import Sensor
 
 
-#pylint: disable-msg=too-many-instance-attributes
+# pylint: disable-msg=too-many-instance-attributes
 class Configuration(object):
     """Stores the program configuration."""
 
@@ -195,7 +195,7 @@ class PlantGateway(object):
                     self.process_mac(sensor)
                 # pylint: disable=bare-except, broad-except
                 except Exception as exception:
-                    next_list.append(sensor) # if it failed, we'll try again in the next round
+                    next_list.append(sensor)  # if it failed, we'll try again in the next round
                     msg = "could not read data from {} ({}) with reason: {}".format(
                         sensor.mac, sensor.alias, str(exception))
                     if sensor.fail_silent:
