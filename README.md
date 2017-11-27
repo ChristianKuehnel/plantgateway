@@ -19,13 +19,13 @@ and [pip](https://pip.pypa.io/en/stable/installing/)
 ```
 sudo apt-get install python3-pip build-essential libglib2.0-dev libyaml-dev
 ```
-* install the plant gateway from github:
+* install the plant gateway from pypi:
 ```
-sudo pip install --upgrade https://github.com/ChristianKuehnel/plantgateway/archive/master.zip
+sudo pip install --upgrade plantgateway
 ```
 or if you have multiple python and pip installations:
 ```
-sudo pip3 install --upgrade https://github.com/ChristianKuehnel/plantgateway/archive/master.zip
+sudo pip3 install --upgrade plantgateway
 ```
 * To update your installation just run pip again. 
 
