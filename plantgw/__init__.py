@@ -29,16 +29,7 @@ class Configuration(object):
         with open(config_file_path, 'r') as config_file:
             config = yaml.load(config_file)
 
-        timeform = '%a, %d %b %Y %H:%M:%S'
-        logform = '%(asctime)s %(levelname)-8s %(message)s'
-        if 'logfile' in config:
-            logfile = os.path.abspath(os.path.expanduser(config['logfile']))
-            if 'debug' in config:
-                logging.basicConfig(filename=logfile, level=logging.DEBUG, datefmt=timeform, format=logform)
-            else:
-                logging.basicConfig(filename=logfile, level=logging.INFO, datefmt=timeform, format=logform)
-        else:
-            logging.basicConfig(level=logging.DEBUG, datefmt=timeform, format=logform)
+        self._configure_logging(config)
 
         self.interface = 0
         if 'interface' in config:
@@ -80,6 +71,19 @@ class Configuration(object):
         for sensor_config in config['sensors']:
             fail_silent = 'fail_silent' in sensor_config
             self.sensors.append(SensorConfig(sensor_config['mac'], sensor_config['alias'], fail_silent))
+
+    @staticmethod
+    def _configure_logging(config):
+        timeform = '%a, %d %b %Y %H:%M:%S'
+        logform = '%(asctime)s %(levelname)-8s %(message)s'
+        if 'logfile' in config:
+            logfile = os.path.abspath(os.path.expanduser(config['logfile']))
+            if 'debug' in config:
+                logging.basicConfig(filename=logfile, level=logging.DEBUG, datefmt=timeform, format=logform)
+            else:
+                logging.basicConfig(filename=logfile, level=logging.INFO, datefmt=timeform, format=logform)
+        else:
+            logging.basicConfig(level=logging.DEBUG, datefmt=timeform, format=logform)
 
 
 class SensorConfig(object):
