@@ -104,10 +104,16 @@ class SensorConfig(object):
             return self.alias
         return self.mac
 
+    def __str__(self):
+        result = self.alias
+        if self.fail_silent:
+            result += ' (fail silent)'
+        return result
+
     @staticmethod
     def get_name_string(sensor_list):
         """Convert a list of sensor objects to a nice string."""
-        return ', '.join([sensor.alias for sensor in sensor_list])
+        return ', '.join([str(sensor) for sensor in sensor_list])
 
 
 class PlantGateway(object):
