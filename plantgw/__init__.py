@@ -40,6 +40,10 @@ class Configuration(object):
         else:
             logging.basicConfig(level=logging.DEBUG, datefmt=timeform, format=logform)
 
+        self.interface = 0
+        if 'interface' in config:
+            self.interface = config['interface']
+
         self.mqtt_port = 8883
         self.mqtt_user = None
         self.mqtt_password = None
@@ -168,7 +172,7 @@ class PlantGateway(object):
     def process_mac(self, sensor_config):
         """Get data from one Sensor."""
         logging.info('Getting data from sensor %s', sensor_config.get_topic())
-        sensor = Sensor(sensor_config.mac)
+        sensor = Sensor(sensor_config.mac, self.config.interface)
         sensor.get_data()
         self._publish(sensor_config, sensor)
 

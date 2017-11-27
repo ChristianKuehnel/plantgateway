@@ -19,9 +19,9 @@ INVALID_DATA = b'\xaa\xbb\xcc\xdd\xee\xff\x99\x88wf\x00\x00\x00\x00\x00\x00'
 class Sensor(object):
     """Read data from sensor."""
 
-    def __init__(self, mac):
-        self.peripheral = Peripheral(mac)
-        LOGGER.debug('connected to device %s', mac)
+    def __init__(self, mac, interface):
+        LOGGER.debug('Connecting to device %s using interface %d ...', mac, interface)
+        self.peripheral = Peripheral(deviceAddr=mac, iface=interface)
         self.battery = None
         self.version = None
         self.temperature = None

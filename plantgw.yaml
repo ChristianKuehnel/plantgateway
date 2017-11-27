@@ -26,6 +26,13 @@ mqtt:
     #format for timestamp string using strftime(), optional as defaults to ISO8601 format
     #timestamp_format: "%d/%m/%y %H:%M:%S"
 
+# Select the bluetooth interface to be used.
+# If this parameter is not defined, interface 0 will be used.
+# 0 = /dev/hci0
+# 1 = /dev/hci1
+# ...
+# interface: 0
+
 # sensor configuration, replace this with the configuration of your sensors
 sensors:
     # bluetooth mac of the sensor, mandatory
