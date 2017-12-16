@@ -76,14 +76,15 @@ class Configuration(object):
     def _configure_logging(config):
         timeform = '%a, %d %b %Y %H:%M:%S'
         logform = '%(asctime)s %(levelname)-8s %(message)s'
+        loglevel = logging.INFO
+        if 'debug' in config:
+            loglevel = logging.DEBUG
+
         if 'logfile' in config:
             logfile = os.path.abspath(os.path.expanduser(config['logfile']))
-            if 'debug' in config:
-                logging.basicConfig(filename=logfile, level=logging.DEBUG, datefmt=timeform, format=logform)
-            else:
-                logging.basicConfig(filename=logfile, level=logging.INFO, datefmt=timeform, format=logform)
+            logging.basicConfig(filename=logfile, level=loglevel, datefmt=timeform, format=logform)
         else:
-            logging.basicConfig(level=logging.DEBUG, datefmt=timeform, format=logform)
+            logging.basicConfig(level=loglevel, datefmt=timeform, format=logform)
 
 
 class SensorConfig(object):
