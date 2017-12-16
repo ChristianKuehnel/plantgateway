@@ -18,7 +18,8 @@ import time
 from datetime import datetime
 import yaml
 import paho.mqtt.client as mqtt
-from plantgw.misensor import Sensor
+from miflora.miflora_poller import MiFloraPoller, MI_BATTERY, MI_LIGHT, MI_CONDUCTIVITY, MI_MOISTURE, MI_TEMPERATURE
+from miflora.backends.bluepy import BluepyBackend
 
 
 # pylint: disable-msg=too-many-instance-attributes
@@ -157,7 +158,7 @@ class PlantGateway(object):
         self.mqtt_client.connect(self.config.mqtt_server, self.config.mqtt_port, 60)
         self.mqtt_client.loop_start()
 
-    def _publish(self, sensor_config, sensor_data):
+    def _publish(self, sensor_config, poller):
         if not self.connected:
             raise Exception('not connected to MQTT server')
 
@@ -167,13 +168,15 @@ class PlantGateway(object):
         prefix = prefix_fmt.format(self.config.mqtt_prefix, sensor_config.get_topic())
 
         data = {
-            'battery': sensor_data.battery,
-            'temperature': '{0:.1f}'.format(sensor_data.temperature),
-            'brightness': sensor_data.brightness,
-            'moisture': sensor_data.moisture,
-            'conductivity': sensor_data.conductivity,
+            'battery': poller.parameter_value(MI_BATTERY),
+            'temperature': '{0:.1f}'.format(poller.parameter_value(MI_TEMPERATURE)),
+            'brightness': poller.parameter_value(MI_LIGHT),
+            'moisture': poller.parameter_value(MI_MOISTURE),
+            'conductivity': poller.parameter_value(MI_CONDUCTIVITY),
             'timestamp': datetime.now().isoformat(),
         }
+        for key, value in data.items():
+            logging.debug("%s: %s", key, value)
         if self.config.mqtt_timestamp_format is not None:
             data['timestamp'] = datetime.now().strftime(self.config.mqtt_timestamp_format)
         json_payload = json.dumps(data)
@@ -183,9 +186,8 @@ class PlantGateway(object):
     def process_mac(self, sensor_config):
         """Get data from one Sensor."""
         logging.info('Getting data from sensor %s', sensor_config.get_topic())
-        sensor = Sensor(sensor_config.mac, self.config.interface)
-        sensor.get_data()
-        self._publish(sensor_config, sensor)
+        poller = MiFloraPoller(sensor_config.mac, BluepyBackend)
+        self._publish(sensor_config, poller)
 
     def process_all(self):
         """Get data from all sensors."""
