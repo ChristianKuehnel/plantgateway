@@ -6,7 +6,7 @@
 #
 ##############################################
 
-from plantgw import PlantGateway, SensorConfig
+from plantgw.plantgw import PlantGateway, SensorConfig
 import sys
 
 
