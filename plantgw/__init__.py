@@ -121,14 +121,12 @@ class SensorConfig(object):
 class PlantGateway(object):
     """Main class of the module."""
 
-    def __init__(self, config_file_path='~/.plantgw.yaml', start_client=True):
+    def __init__(self, config_file_path='~/.plantgw.yaml'):
         config_file_path = os.path.abspath(os.path.expanduser(config_file_path))
         self.config = Configuration(config_file_path)
         logging.info('loaded config file from %s', config_file_path)
         self.mqtt_client = None
         self.connected = False
-        if start_client:
-            self._start_client()
 
     def start_client(self):
         """Start the mqtt client."""
@@ -159,8 +157,7 @@ class PlantGateway(object):
         self.mqtt_client.loop_start()
 
     def _publish(self, sensor_config, poller):
-        if not self.connected:
-            raise Exception('not connected to MQTT server')
+        self.start_client()
 
         prefix_fmt = '{}/{}'
         if self.config.mqtt_trailing_slash:
