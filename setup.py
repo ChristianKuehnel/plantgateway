@@ -6,22 +6,25 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 #
 ##############################################
+"""Setup for plantgateway."""
 
 import sys
-from distutils.core import setup
+from setuptools import setup
 
-install_requires = ['bluepy==1.1.4', "paho-mqtt", 'pyyaml', "miflora==0.4"]
+
+INSTALL_REQUIRES = ['bluepy==1.1.4', "paho-mqtt", 'pyyaml', "miflora==0.4"]
 if sys.version_info < (3, 0):
-    install_requires.append('mock')
+    INSTALL_REQUIRES.append('mock')
 
 
-setup(name='plantgateway',
-      version='0.4.2',
-      description='Bluetooth to mqtt gateway for Xiaomi Mi plant sensors',
-      author='Christian Kühnel',
-      author_email='christian.kuehnel@gmail.com',
-      url='https://www.python.org/sigs/distutils-sig/',
-      packages=['plantgw'],
-      install_requires=install_requires,
-      scripts=['plantgw/plantgateway'],
-      )
+setup(
+    name='plantgateway',
+    version='0.5.0',
+    description='Bluetooth to mqtt gateway for Xiaomi Mi plant sensors',
+    author='Christian Kühnel',
+    author_email='christian.kuehnel@gmail.com',
+    url='https://www.python.org/sigs/distutils-sig/',
+    packages=['plantgw'],
+    install_requires=INSTALL_REQUIRES,
+    scripts=['plantgw/plantgateway'],
+    )
