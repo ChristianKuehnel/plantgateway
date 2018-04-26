@@ -10,7 +10,7 @@
 
 import sys
 from setuptools import setup
-
+from plantgw.version import __version__ as version
 
 INSTALL_REQUIRES = ['bluepy==1.1.4', "paho-mqtt", 'pyyaml', "miflora==0.4"]
 if sys.version_info < (3, 0):
@@ -19,7 +19,7 @@ if sys.version_info < (3, 0):
 
 setup(
     name='plantgateway',
-    version='0.5.0',
+    version=version,
     description='Bluetooth to mqtt gateway for Xiaomi Mi plant sensors',
     author='Christian Kühnel',
     author_email='christian.kuehnel@gmail.com',

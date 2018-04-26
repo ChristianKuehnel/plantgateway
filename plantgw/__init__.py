@@ -21,6 +21,8 @@ import paho.mqtt.client as mqtt
 from miflora.miflora_poller import MiFloraPoller, MI_BATTERY, MI_LIGHT, MI_CONDUCTIVITY, MI_MOISTURE, MI_TEMPERATURE
 from btlewrap.bluepy import BluepyBackend
 
+from plantgw.version import __version__
+
 
 # pylint: disable-msg=too-many-instance-attributes
 class Configuration(object):
@@ -124,6 +126,7 @@ class PlantGateway(object):
     def __init__(self, config_file_path='~/.plantgw.yaml'):
         config_file_path = os.path.abspath(os.path.expanduser(config_file_path))
         self.config = Configuration(config_file_path)
+        logging.info('PlantGateway version %s', __version__)
         logging.info('loaded config file from %s', config_file_path)
         self.mqtt_client = None
         self.connected = False
