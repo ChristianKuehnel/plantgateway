@@ -19,7 +19,7 @@ from datetime import datetime
 import yaml
 import paho.mqtt.client as mqtt
 from miflora.miflora_poller import MiFloraPoller, MI_BATTERY, MI_LIGHT, MI_CONDUCTIVITY, MI_MOISTURE, MI_TEMPERATURE
-from miflora.backends.bluepy import BluepyBackend
+from btlewrap.bluepy import BluepyBackend
 
 
 # pylint: disable-msg=too-many-instance-attributes

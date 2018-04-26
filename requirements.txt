@@ -1,4 +1,4 @@
 bluepy==1.1.4
 paho-mqtt
 pyyaml
-miflora==0.2.0
+miflora==0.4

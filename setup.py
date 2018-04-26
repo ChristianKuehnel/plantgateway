@@ -10,7 +10,7 @@
 import sys
 from distutils.core import setup
 
-install_requires = ['bluepy==1.1.4', "paho-mqtt", 'pyyaml', "miflora"]
+install_requires = ['bluepy==1.1.4', "paho-mqtt", 'pyyaml', "miflora==0.4"]
 if sys.version_info < (3, 0):
     install_requires.append('mock')
 
