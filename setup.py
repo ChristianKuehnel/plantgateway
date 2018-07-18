@@ -11,7 +11,7 @@
 from setuptools import setup
 from plantgw import __version__
 
-INSTALL_REQUIRES = ['bluepy==1.1.4', "paho-mqtt", 'pyyaml', "miflora==0.4"]
+INSTALL_REQUIRES = ['bluepy==1.1.4', "paho-mqtt", 'pyyaml==3.13', "miflora==0.4"]
 
 setup(
     name='plantgateway',
