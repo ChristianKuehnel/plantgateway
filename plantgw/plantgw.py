@@ -25,7 +25,7 @@ from plantgw import __version__
 
 
 # pylint: disable-msg=too-many-instance-attributes
-class Configuration(object):
+class Configuration:
     """Stores the program configuration."""
 
     def __init__(self, config_file_path):
@@ -90,7 +90,7 @@ class Configuration(object):
             logging.basicConfig(level=loglevel, datefmt=timeform, format=logform)
 
 
-class SensorConfig(object):
+class SensorConfig:
     """Stores the configuration of a sensor."""
 
     def __init__(self, mac, alias=None, fail_silent=False):
@@ -120,7 +120,7 @@ class SensorConfig(object):
         return ', '.join([str(sensor) for sensor in sensor_list])
 
 
-class PlantGateway(object):
+class PlantGateway:
     """Main class of the module."""
 
     def __init__(self, config_file_path='~/.plantgw.yaml'):
