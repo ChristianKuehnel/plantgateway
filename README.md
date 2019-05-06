@@ -66,6 +66,15 @@ A remark on security:
 Before running your MQTT server on the internet make sure that you enable
 SSL/TLS encryption and client authentication.
 
+# Problem analysis
+In case you have any problem with plantgateway, please check:
+
+- Is you configuration file a valid YAML file?
+- Does your Bluetooth dongle support Bluetooh Low Energy? Check with `sudo hcitool lescan`, this should list all Low Energy devices.
+- If you have connection issues, please try a system update `sudo apt update; sudo apt dist-upgrade`. This fixes these issues usually.
+
+If all this does not help, please file a bug ticket in github.
+
 # License
 Unless stated otherwise all software in this repository is licensed under the Apache License 2.0
 http://www.apache.org/licenses/LICENSE-2.0
