@@ -22,5 +22,7 @@ setup(
     url='https://www.python.org/sigs/distutils-sig/',
     packages=['plantgw'],
     install_requires=INSTALL_REQUIRES,
-    scripts=['plantgateway'],
+    entry_points = {
+        'console_scripts': ['plantgatewayd=plantgw.daemon:main'],
+    }
     )
