@@ -30,7 +30,7 @@ class Configuration:
 
     def __init__(self, config_file_path):
         with open(config_file_path, 'r') as config_file:
-            config = yaml.load(config_file)
+            config = yaml.load(config_file, Loader=yaml.FullLoader)
 
         self._configure_logging(config)
 
