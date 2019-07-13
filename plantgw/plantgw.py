@@ -284,16 +284,16 @@ class PlantGateway:
         if self.config.mqtt_discovery_prefix is None:
             return
         self.start_client()
-        device_name = f'plant_{sensor_config.short_mac}'
+        device_name = 'plant_{}'.format(sensor_config.short_mac)
         for attribute in MQTTAttributes:
-            topic = f'{self.config.mqtt_discovery_prefix}/sensor/{device_name}_{attribute.value}/config'
+            topic = '{}/sensor/{}_{}/config'.format(self.config.mqtt_discovery_prefix, device_name, attribute.value)
             payload = {
                 'state_topic':         self._get_state_topic(sensor_config),
                 'unit_of_measurement': UNIT_OF_MEASUREMENT[attribute],
                 'value_template':      '{{value_json.'+attribute.value+'}}',
             }
             if sensor_config.alias is not None:
-                payload['name'] = f'{sensor_config.alias}_{attribute.value}'
+                payload['name'] = '{}_{}'.format(sensor_config.alias, attribute.value)
 
             if DEVICE_CLASS[attribute] is not None:
                 payload['device_class'] = DEVICE_CLASS[attribute]

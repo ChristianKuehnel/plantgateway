@@ -29,6 +29,9 @@ sudo pip3 install --upgrade plantgateway
 ```
 * To update your installation just run pip again. 
 
+If you have problems with the PyYaml installation, update your pip version 
+with `sudo pip3 install --upgrade pip` and try again.
+
 # configuration
 Copy the [plantgw.yaml](plantgw.yaml) (in this repository) to your home directory and
 rename it to ".plantgw.yaml".
@@ -44,6 +47,16 @@ You probably want to add the script to your cron tab to be executed
 in regular intervals (e.q. every hour).
 
 # integration in home automation
+
+## HomeAssistant
+If you enable the [MQTT discovery](https://www.home-assistant.io/docs/mqtt/discovery/) 
+feature by setting the `discovery_prefix` parameter in
+the config file, all configured sensors are automatically available in HomeAssistant.
+To monitor the state of your plants, you can use the 
+["plant" component](https://www.home-assistant.io/components/plant/).
+
+
+## fhem
 To check your plants in the home automation tool [fhem](http://fhem.de/), 
 you can use the 
 [gardener](https://github.com/ChristianKuehnel/fhem-gardener) module. 
