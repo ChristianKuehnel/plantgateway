@@ -11,16 +11,29 @@
 from setuptools import setup
 from plantgw import __version__
 
-INSTALL_REQUIRES = ['bluepy==1.1.4', "paho-mqtt", 'pyyaml>=4.2b1', "miflora==0.4"]
+
+def install_requires():
+    """Read requirements from file."""
+    with open('requirements.txt', 'r') as readme_file:
+        return readme_file.readlines()
+
+
+def readme():
+    """Load the readme file."""
+    with open('README.md', 'r') as readme_file:
+        return readme_file.read()
+
 
 setup(
     name='plantgateway',
     version=__version__,
     description='Bluetooth to mqtt gateway for Xiaomi Mi plant sensors',
+    long_description=readme(),
+    long_description_content_type='text/markdown',
     author='Christian Kühnel',
     author_email='christian.kuehnel@gmail.com',
     url='https://www.python.org/sigs/distutils-sig/',
     packages=['plantgw'],
-    install_requires=INSTALL_REQUIRES,
+    install_requires=install_requires(),
     scripts=['plantgateway'],
     )
