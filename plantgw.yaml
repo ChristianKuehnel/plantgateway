@@ -6,6 +6,11 @@ mqtt:
     #url of your mqtt server, madatory
     server: my-mqtt-server
 
+    # If this is enabled, plantgateway will announce all plants via the MQTT Discovery
+    # feature of Home Assistant in this MQTT prefix. For details see:
+    # https://www.home-assistant.io/docs/mqtt/discovery/
+    discovery_prefix: homeassistant
+
     #prefix of the topic where the sensor data will be published, mandatory
     prefix: some/prefix/my/plants
     #terminate topic with a trailing slash, optional as defaults to True
