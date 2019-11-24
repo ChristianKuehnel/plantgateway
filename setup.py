@@ -7,15 +7,8 @@
 #
 ##############################################
 """Setup for plantgateway."""
-
 from setuptools import setup
 from plantgw import __version__
-
-
-def install_requires():
-    """Read requirements from file."""
-    with open('requirements.txt', 'r') as readme_file:
-        return readme_file.readlines()
 
 
 def readme():
@@ -34,6 +27,6 @@ setup(
     author_email='christian.kuehnel@gmail.com',
     url='https://www.python.org/sigs/distutils-sig/',
     packages=['plantgw'],
-    install_requires=install_requires(),
+    install_requires=['bluepy==1.3.0', 'paho-mqtt', 'pyyaml>=5.1', 'miflora==0.6', 'typing>=3,<4'],
     scripts=['plantgateway'],
     )
