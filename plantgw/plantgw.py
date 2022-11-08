@@ -52,7 +52,7 @@ DEVICE_CLASS = {
     MQTTAttributes.BATTERY:      'battery',
     MQTTAttributes.TEMPERATURE:  'temperature',
     MQTTAttributes.BRIGHTNESS:   'illuminance',
-    MQTTAttributes.MOISTURE:     None,
+    MQTTAttributes.MOISTURE:     'moisture',
     MQTTAttributes.CONDUCTIVITY: None,
     MQTTAttributes.TIMESTAMP:    'timestamp',
 }
@@ -296,15 +296,17 @@ class PlantGateway:
                 'unique_id':           '{}_{}'.format(device_id, attribute.value),
                 'state_topic':         self._get_state_topic(sensor_config),
                 'unit_of_measurement': UNIT_OF_MEASUREMENT[attribute],
-                'value_template':      '{{value_json.'+attribute.value+'}}',
+                'value_template':      '{{value_json.'+attribute.value+' | is_defined }}',
+                "state_class": "measurement",
+                'force_update':        True,
                 'device':              {
                     'identifiers':     '[ {} ]'.format(device_id),
                     'name':            device_name,
                     'model':           device_model,
-                    'manufacturer':    'Xiaomi',
+                    'manufacturer':    'Xiaomi/VegTrug',
                     'sw_version':      device_firmware,
+                    }
                 }
-            }
             if sensor_config.alias is not None:
                 payload['name'] = '{} {}'.format(sensor_config.alias, attribute.value.capitalize())
 
@@ -312,5 +314,5 @@ class PlantGateway:
                 payload['device_class'] = DEVICE_CLASS[attribute]
 
             json_payload = json.dumps(payload)
-            self.mqtt_client.publish(topic, json_payload, qos=1, retain=False)
+            self.mqtt_client.publish(topic, json_payload, qos=1, retain=True)
             logging.info('sent sensor config to topic %s', topic)
