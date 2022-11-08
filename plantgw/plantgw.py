@@ -52,7 +52,7 @@ DEVICE_CLASS = {
     MQTTAttributes.BATTERY:      'battery',
     MQTTAttributes.TEMPERATURE:  'temperature',
     MQTTAttributes.BRIGHTNESS:   'illuminance',
-    MQTTAttributes.MOISTURE:     None,
+    MQTTAttributes.MOISTURE:     'moisture',
     MQTTAttributes.CONDUCTIVITY: None,
     MQTTAttributes.TIMESTAMP:    'timestamp',
 }
@@ -237,7 +237,7 @@ class PlantGateway:
         """Get data from one Sensor."""
         logging.info('Getting data from sensor %s', sensor_config.get_topic())
         poller = MiFloraPoller(sensor_config.mac, BluepyBackend)
-        self.announce_sensor(sensor_config)
+        self.announce_sensor(sensor_config, poller)
         self._publish(sensor_config, poller)
 
     def process_all(self):
@@ -276,7 +276,7 @@ class PlantGateway:
         # return sensors that could not be processed after max_retry
         return next_list
 
-    def announce_sensor(self, sensor_config: SensorConfig):
+    def announce_sensor(self, sensor_config: SensorConfig, poller: MiFloraPoller):
         """Announce the sensor via Home Assistant MQTT Discovery.
 
            see https://www.home-assistant.io/docs/mqtt/discovery/
@@ -284,20 +284,35 @@ class PlantGateway:
         if self.config.mqtt_discovery_prefix is None:
             return
         self.start_client()
-        device_name = 'plant_{}'.format(sensor_config.short_mac)
+
+        device_id = 'plant_{}'.format(sensor_config.short_mac)
+        device_name = sensor_config.alias or 'Plant {}'.format(sensor_config.short_mac)
+        device_model = poller.name()
+        device_firmware = poller.firmware_version()
+
         for attribute in MQTTAttributes:
-            topic = '{}/sensor/{}_{}/config'.format(self.config.mqtt_discovery_prefix, device_name, attribute.value)
+            topic = '{}/sensor/{}_{}/config'.format(self.config.mqtt_discovery_prefix, device_id, attribute.value)
             payload = {
+                'unique_id':           '{}_{}'.format(device_id, attribute.value),
                 'state_topic':         self._get_state_topic(sensor_config),
                 'unit_of_measurement': UNIT_OF_MEASUREMENT[attribute],
-                'value_template':      '{{value_json.'+attribute.value+'}}',
-            }
+                'value_template':      '{{value_json.'+attribute.value+' | is_defined }}',
+                "state_class": "measurement",
+                'force_update':        True,
+                'device':              {
+                    'identifiers':     '[ {} ]'.format(device_id),
+                    'name':            device_name,
+                    'model':           device_model,
+                    'manufacturer':    'Xiaomi/VegTrug',
+                    'sw_version':      device_firmware,
+                    }
+                }
             if sensor_config.alias is not None:
-                payload['name'] = '{}_{}'.format(sensor_config.alias, attribute.value)
+                payload['name'] = '{} {}'.format(sensor_config.alias, attribute.value.capitalize())
 
             if DEVICE_CLASS[attribute] is not None:
                 payload['device_class'] = DEVICE_CLASS[attribute]
 
             json_payload = json.dumps(payload)
-            self.mqtt_client.publish(topic, json_payload, qos=1, retain=False)
+            self.mqtt_client.publish(topic, json_payload, qos=1, retain=True)
             logging.info('sent sensor config to topic %s', topic)
